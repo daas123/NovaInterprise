@@ -4,7 +4,7 @@ import cors from "cors";
 import pool from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js"
 import errorHanling from "./middlewares/errorHandler.js";
-import createUserTable from "./data/createUserTable.js";
+import createBuildingDatabaseTable from "./data/buldingDatabaseTable.js";
 
 dotenv.config();
 
@@ -21,16 +21,23 @@ app.use("/api",userRoutes);
 //Error Handling Middleware
 app.use(errorHanling);
 
-//create table before starting server 
-createUserTable();
+const startServer = async () => {
+  try {
+    // Create required tables before starting the server
+    await createBuildingDatabaseTable();
 
-//Testing postgres Connection
-app.get("/",async(req,res)=>{
+    // Test DB connection (optional)
     const result = await pool.query("SELECT current_database()");
-    res.send(`the database name is : ${result.rows[0].current_database}`)
-})
+    console.log(`📦 Connected to DB: ${result.rows[0].current_database}`);
 
-// Server running
-app.listen(port,()=>{
-    console.log(`server running on port: ${port}`);
-});
+    // Start server
+    app.listen(port, () => {
+      console.log(`🚀 Server running on port: ${port}`);
+    });
+  } catch (error) {
+    console.error("❌ Error during server startup:", error);
+    process.exit(1);
+  }
+};
+
+startServer();
