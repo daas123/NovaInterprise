@@ -5,7 +5,7 @@ const createMaintainaenceRecordTable = async () => {
     CREATE TABLE IF NOT EXISTS maintenance_records (
       id SERIAL PRIMARY KEY,
       flat_id INTEGER NOT NULL REFERENCES flats(id) ON DELETE CASCADE,
-      group_id INTEGER NOT NULL REFERENCES monthly_expense_groups(id) ON DELETE CASCADE,
+      group_id INTEGER NOT NULL ,
       amount_due NUMERIC NOT NULL,
       amount_paid NUMERIC DEFAULT 0,
       payment_date TIMESTAMP,

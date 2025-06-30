@@ -4,7 +4,7 @@ import cors from "cors";
 import pool from "./config/db.js";
 import userRoutes from "./routes/userRoutes.js"
 import errorHanling from "./middlewares/errorHandler.js";
-import createBuildingDatabaseTable from "./data/buldingDatabaseTable.js";
+import createBuildingDatabaseTable from "./data/configDatabaseTable.js";
 
 dotenv.config();
 
