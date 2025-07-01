@@ -1,5 +1,25 @@
 import pool from "../config/db.js";
 
+// REGISTER USER
+export const registerUserService = async (name,email,phone,flatNo,password) => {
+    const result = await pool.query("INSERT INTO users(name,email,phone,flatNo,password) VALUES($1,$2,$3,$4,$5) RETURNING *",[name,email,phone,flatNo,password]);
+    return result;
+}
+
+// LOGIN USER
+export const loginUserService = async (email,password) => {
+    const result = await pool.query("SELECT * FROM users WHERE email = $1 AND password = $2",[email, password]);
+    if (!result) {
+        throw new Error("Invalid email or password");
+    }
+
+    if (!result || !result.rows || result.rows.length === 0) {
+        return null; // let the controller handle it
+    }
+    
+    return result.rows[0];
+}
+
 export const getAllUsersService = async () => {
     const result = await pool.query("SELECT * FROM users");
     return result.rows

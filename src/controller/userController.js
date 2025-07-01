@@ -1,4 +1,4 @@
-import { createUserService, deleteUserService, getAllUsersService, getUsersByIdService, updateUserService } from "../models/userModel.js"
+import { createUserService, deleteUserService, getAllUsersService, getUsersByIdService, loginUserService, registerUserService, updateUserService } from "../models/userModel.js"
 
 // Standardized response Function
 const handleResponse = (res,status,message,data = null) =>{
@@ -9,17 +9,37 @@ const handleResponse = (res,status,message,data = null) =>{
     })
 }
 
-export const createUser = async (req,res,next) => {
-    const name = req.body.name
-    const email = req.body.email
+export const registerUser = async (req,res,next) => {
+    const name = req.body.name;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const flatNo = req.body.flatNo;
+    const password = req.body.password;
 
     try{
-        const newUser = await createUserService(name,email);
-        handleResponse(res,201,"User created successfully",newUser);
-    } catch(err){
+        const register = await registerUserService(name,email,phone,flatNo,password);
+        handleResponse(res,201,"Register Successfull","");
+    }catch(err){
         next(err);
     }
 };
+
+export const loginUser = async (req, res, next) => {
+    const { email, password } = req.body;
+
+    try {
+        const user = await loginUserService(email, password);
+        if (!user) {
+            return handleResponse(res,401,"Invalid email or password","");
+        }
+        delete user.password; 
+        return handleResponse(res, 200, "Login successful", user);
+    } catch (err) {
+        console.error("Login error:", err); 
+        return handleResponse(res, 500, "Something went wrong", err.message);
+    }
+};
+
 
 export const getAllUsers = async (req,res,next) => {
     try{

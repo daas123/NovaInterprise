@@ -1,12 +1,20 @@
 import Joi from "joi";
 
-const userScheme = Joi.object({
+const registerScheme = Joi.object({
     name : Joi.string().min(3).required(),
     email : Joi.string().email().required(),
+    phone : Joi.string().max(15).required(),
+    flatNo : Joi.string(),
+    password : Joi.string().min(6).required()
 });
 
-const validateUser = (req,res,next) => {
-    const {error} = userScheme.validate(req.body);
+const loginSchema = Joi.object({
+    email : Joi.string().email().required(),
+    password : Joi.string().min(6).required()
+});
+
+export const validateRegister = (req,res,next) => {
+    const {error} = registerScheme.validate(req.body);
     if (error) return res.status(400).json({
         status : 400,
         message:error.details[0].message
@@ -14,4 +22,11 @@ const validateUser = (req,res,next) => {
     next();
 };
 
-export default validateUser;
+export const validateLogin = (req,res,next) => {
+    const {error} = loginSchema.validate(req.body);
+    if (error) return res.status(400).json({
+        status : 400,
+        message:error.details[0].message
+    });
+    next();
+};
