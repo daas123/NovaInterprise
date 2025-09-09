@@ -17,6 +17,9 @@ app.use(cors());
 
 // Routes
 app.use("/api",userRoutes);
+app.get("/", (req, res) => {
+  res.send("✅ Server is up and running!");
+});
 
 //Error Handling Middleware
 app.use(errorHanling);

@@ -1,4 +1,5 @@
 import { createUserService, deleteUserService, getAllUsersService, getUsersByIdService, loginUserService, registerUserService, updateUserService } from "../models/userModel.js"
+import jwt from "jsonwebtoken";
 
 // Standardized response Function
 const handleResponse = (res,status,message,data = null) =>{
@@ -10,16 +11,22 @@ const handleResponse = (res,status,message,data = null) =>{
 }
 
 export const registerUser = async (req,res,next) => {
-    const name = req.body.name;
-    const email = req.body.email;
-    const phone = req.body.phone;
-    const flatNo = req.body.flatNo;
-    const password = req.body.password;
+    const { name, email, phone, password } = req.body;
 
-    try{
-        const register = await registerUserService(name,email,phone,flatNo,password);
-        handleResponse(res,201,"Register Successfull","");
-    }catch(err){
+    try {
+        const register = await registerUserService(name,email,phone,password);
+        if(!register) return handleResponse(res,400,"Registration failed","");
+        delete register.password; // remove password for response
+
+        // JWT generate
+        const token = jwt.sign(
+            { id: register.id, email: register.email },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
+        );
+
+        handleResponse(res,201,"Register Successful",{ ...register, token });
+    } catch(err){
         next(err);
     }
 };
@@ -32,13 +39,23 @@ export const loginUser = async (req, res, next) => {
         if (!user) {
             return handleResponse(res,401,"Invalid email or password","");
         }
-        delete user.password; 
-        return handleResponse(res, 200, "Login successful", user);
+
+        delete user.password; // remove password
+
+        // JWT generate
+        const token = jwt.sign(
+            { id: user.id, email: user.email },
+            process.env.JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
+        );
+
+        return handleResponse(res, 200, "Login successful", { ...user, token });
     } catch (err) {
         console.error("Login error:", err); 
         return handleResponse(res, 500, "Something went wrong", err.message);
     }
 };
+
 
 
 export const getAllUsers = async (req,res,next) => {
