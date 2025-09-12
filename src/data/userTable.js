@@ -8,7 +8,6 @@ const createUserTable = async () => {
       email VARCHAR(100) UNIQUE NOT NULL,
       phone VARCHAR(15) UNIQUE,
       role VARCHAR(50) DEFAULT 'tenant',
-      flatno VARCHAR(15),
       password VARCHAR(100) NOT NULL,
       created_at TIMESTAMP DEFAULT NOW()
     );

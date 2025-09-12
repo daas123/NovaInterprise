@@ -14,18 +14,9 @@ export const registerUser = async (req,res,next) => {
     const { name, email, phone, password } = req.body;
 
     try {
+        console.log(name, email, phone, password);
         const register = await registerUserService(name,email,phone,password);
-        if(!register) return handleResponse(res,400,"Registration failed","");
-        delete register.password; // remove password for response
-
-        // JWT generate
-        const token = jwt.sign(
-            { id: register.id, email: register.email },
-            process.env.JWT_SECRET,
-            { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
-        );
-
-        handleResponse(res,201,"Register Successful",{ ...register, token });
+        handleResponse(res,201,"Register Successfull","");
     } catch(err){
         next(err);
     }

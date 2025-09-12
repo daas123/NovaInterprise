@@ -1,8 +1,8 @@
 import pool from "../config/db.js";
 
 // REGISTER USER
-export const registerUserService = async (name,email,phone,flatNo,password) => {
-    const result = await pool.query("INSERT INTO users(name,email,phone,flatNo,password) VALUES($1,$2,$3,$4,$5) RETURNING *",[name,email,phone,flatNo,password]);
+export const registerUserService = async (name,email,phone,password) => {
+    const result = await pool.query("INSERT INTO users(name,email,phone,password) VALUES($1,$2,$3,$4) RETURNING *",[name,email,phone,password]);
     return result;
 }
 
