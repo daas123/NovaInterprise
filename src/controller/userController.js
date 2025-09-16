@@ -11,11 +11,11 @@ const handleResponse = (res,status,message,data = null) =>{
 }
 
 export const registerUser = async (req,res,next) => {
-    const { name, email, phone, password } = req.body;
+    const { email, phone, password } = req.body;
 
     try {
         console.log(name, email, phone, password);
-        const register = await registerUserService(name,email,phone,password);
+        const register = await registerUserService(email,phone,password);
         handleResponse(res,201,"Register Successfull","");
     } catch(err){
         next(err);
