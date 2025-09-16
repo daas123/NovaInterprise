@@ -11,15 +11,18 @@ const handleResponse = (res,status,message,data = null) =>{
 }
 
 export const registerUser = async (req,res,next) => {
-    const { email, phone, password } = req.body;
+  const { email, phone, password } = req.body;
 
-    try {
-        console.log(name, email, phone, password);
-        const register = await registerUserService(email,phone,password);
-        handleResponse(res,201,"Register Successfull","");
-    } catch(err){
-        next(err);
-    }
+  try {
+    const emailPrefix = email.split('@')[0];
+    const randomSuffix = Math.random().toString(36).substring(2, 6);
+    const username = `${emailPrefix}_${randomSuffix}`;
+    console.log(email, phone, password,username);
+    const register = await registerUserService(email, phone, password, username);
+    handleResponse(res,201,"Register Successful","Registered");
+  } catch (err) {
+    next(err);
+  }
 };
 
 export const loginUser = async (req, res, next) => {
@@ -40,7 +43,7 @@ export const loginUser = async (req, res, next) => {
             { expiresIn: process.env.JWT_EXPIRES_IN || "1h" }
         );
 
-        return handleResponse(res, 200, "Login successful", { ...user, token });
+        return handleResponse(res, 200, "Login successful", { token });
     } catch (err) {
         console.error("Login error:", err); 
         return handleResponse(res, 500, "Something went wrong", err.message);

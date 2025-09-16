@@ -1,14 +1,14 @@
 import pool from "../config/db.js";
 
 // REGISTER USER
-export const registerUserService = async (email,phone,password) => {
-    const result = await pool.query("INSERT INTO users(email,phone,password) VALUES($1,$2,$3) RETURNING *",[email,phone,password]);
+export const registerUserService = async (email,phone,password,username) => {
+    const result = await pool.query("INSERT INTO users(email,phone,password_hash,username) VALUES($1,$2,$3,$4) RETURNING *",[email,phone,password,username]);
     return result;
 }
 
 // LOGIN USER
 export const loginUserService = async (email,password) => {
-    const result = await pool.query("SELECT * FROM users WHERE email = $1 AND password = $2",[email, password]);
+    const result = await pool.query("SELECT * FROM users WHERE email = $1 AND password_hash = $2",[email, password]);
     if (!result) {
         throw new Error("Invalid email or password");
     }
