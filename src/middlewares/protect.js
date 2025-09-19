@@ -11,7 +11,7 @@ export const protect = (req,res,next) => {
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.userid = decoded.payload.userid; // user info add to request
+        req.userId = decoded.id;
         next();
     } catch(err) {
         return res.status(401).json({ status: 401, message: "Invalid or expired token" });

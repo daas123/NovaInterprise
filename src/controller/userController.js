@@ -53,8 +53,8 @@ export const loginUser = async (req, res, next) => {
 
 export const profileDetails = async (req,res,next) => {
     try{
-        console.log(req.userid)
-        const user = await profileDetailsService( req.userid )
+        console.log(req)
+        const user = await profileDetailsService( req.userId )
         delete user.password
         console.log(user)
         if (!user) {
@@ -64,7 +64,7 @@ export const profileDetails = async (req,res,next) => {
         if (user == null){
              return handleResponse(res,401,"Invalid User id");
         }
-        handleResponse(res,201,{user});
+        handleResponse(res,201,"Profile Fetched",{user});
     }catch(err){
         console.error("", err); 
         return handleResponse(res, 500, "Something went wrong", err.message);
