@@ -2,8 +2,12 @@ import pool from "../config/db.js";
 
 // REGISTER USER
 export const registerUserService = async (email,phone,password,username) => {
-    const result = await pool.query("INSERT INTO users(email,phone,password_hash,username) VALUES($1,$2,$3,$4) RETURNING *",[email,phone,password,username]);
+
+    const result = await pool.query("INSERT INTO users(email,mobile_number,password_hash,username) VALUES($1,$2,$3,$4) RETURNING *",[email,phone,password,username]);
+    const id = result.rows[0].id
+    const userDetails = await pool.query("INSERT INTO user_details(user_id,email,mobile_number,username) VALUES($1,$2,$3,$4) RETURNING *",[id,email,phone,username]);
     return result;
+    
 }
 
 // LOGIN USER

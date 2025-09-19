@@ -18,7 +18,7 @@ export const registerUser = async (req,res,next) => {
     const randomSuffix = Math.random().toString(36).substring(2, 6);
     const username = `${emailPrefix}_${randomSuffix}`;
     console.log(email, phone, password,username);
-    const register = await registerUserService(email, phone, password, username);
+    const registerResult = await registerUserService(email, phone, password, username);
     handleResponse(res,201,"Register Successful","Registered");
   } catch (err) {
     next(err);
@@ -51,9 +51,31 @@ export const loginUser = async (req, res, next) => {
 };
 
 
-export const profileDetails = async (req,res,next) => {
+export const getProfileDetails = async (req,res,next) => {
     try{
         console.log(req)
+        console.log("User Id",req.userId)
+        const user = await profileDetailsService( req.userId )
+        delete user.password
+        console.log(user)
+        if (!user) {
+            return handleResponse(res,401,"Invalid User id");
+        }
+
+        if (user == null){
+             return handleResponse(res,401,"Invalid User id");
+        }
+        handleResponse(res,201,"Profile Fetched",{user});
+    }catch(err){
+        console.error("", err); 
+        return handleResponse(res, 500, "Something went wrong", err.message);
+    }
+}
+
+export const updateProfileDetails = async (req,res,next) => {
+    try{
+        console.log(req)
+        console.log("User Id",req.userId)
         const user = await profileDetailsService( req.userId )
         delete user.password
         console.log(user)

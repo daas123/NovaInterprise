@@ -5,7 +5,7 @@ const createUserTables = async () => {
     CREATE TABLE IF NOT EXISTS users (
       id SERIAL PRIMARY KEY,
       username VARCHAR(50) UNIQUE,
-      phone VARCHAR(15) UNIQUE ,
+      mobile_number VARCHAR(15) UNIQUE ,
       email VARCHAR(100) UNIQUE NOT NULL,
       password_hash VARCHAR(255) NOT NULL,
       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -14,8 +14,9 @@ const createUserTables = async () => {
     CREATE TABLE IF NOT EXISTS user_details (
       id SERIAL PRIMARY KEY,
       user_id INT REFERENCES users(id) ON DELETE CASCADE,
-      first_name VARCHAR(50) NOT NULL,
-      last_name VARCHAR(50) NOT NULL,
+      username VARCHAR(50) UNIQUE,
+      first_name VARCHAR(50),
+      last_name VARCHAR(50),
       parents_name VARCHAR(50),
       mobile_number VARCHAR(15) UNIQUE NOT NULL,
       email VARCHAR(100) UNIQUE NOT NULL,
